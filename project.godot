@@ -16,7 +16,14 @@ _global_script_class_icons={
 [application]
 
 config/name="New Game Project"
+run/main_scene="res://beginning_platform.tscn"
 config/icon="res://icon.png"
+
+[display]
+
+window/size/width=640
+window/size/height=360
+window/size/resizable=false
 
 [rendering]
 

@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://slime.gd" type="Script" id=1]
+[ext_resource path="res://Sprites/char_stand_right0.png" type="Texture" id=2]
+
+[node name="World" type="Node"]
+
+[node name="slime" type="KinematicBody2D" parent="."]
+position = Vector2( 120, 40 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="slime"]
+texture = ExtResource( 2 )
