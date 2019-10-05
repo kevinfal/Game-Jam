@@ -4,47 +4,58 @@ const UP = Vector2(0, -1)
 const GRAVITY =  Vector2(0, 20)
 const JUMP_HEIGHT = Vector2(0, -550)
 
-const HOP_RIGHT = Vector2(32, 0)
-const HOP_LEFT = Vector2(-32, 0)
+const HOP_RIGHT = Vector2(100, 0)
+const HOP_LEFT = Vector2(-100, 0)
 
 var motion = Vector2()
 
+var facing_right = true
+
 var is_jumping = false
-var animation_flag = false
+var hop_flag = false
 var animation_counter = 0
+
+# gets the animation node for animations
+onready var anim = get_node("sprite/AnimationPlayer")
+
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	
+	print(facing_right)
 	motion += GRAVITY
-	
-	if animation_flag == true:
+	# check if hopping
+	if hop_flag == true:
 		
 		animation_counter += delta
-		print(animation_counter)
 		
-		if animation_counter >= 0.5:
-			print("exit condition")
-			animation_flag = false
 		
+		if animation_counter >= anim.current_animation_length:
+			hop_flag = false
+			animation_counter = 0
+			anim.stop()
+			if facing_right:
+				anim.play("idle")
+			else:
+				anim.play("idle_left")
 	else:
-	
-		if Input.is_action_pressed("ui_right"):
 		
-			$Sprite.flip_h = false
-			$Sprite.play("hop_right")
-			animation_flag = true
+		if Input.is_action_pressed("ui_right"):
+			anim.play("hop_right")
+			hop_flag = true
 			motion += HOP_RIGHT
+			facing_right = true
 			
-		elif Input.is_action_just_pressed("ui_left"):
 			
-			$Sprite.flip_h = true
-			#$Sprite.play("hop_left")
+		elif Input.is_action_pressed("ui_left"):
+			anim.play("hop_left")
+			hop_flag = true
 			motion += HOP_LEFT
+			facing_right = false
+
 		
 		else:
-			
-			$Sprite.play('idle')
+			anim.play("idle")
 			motion.x = 0
 			
 		if Input.is_action_just_pressed("ui_accept"):
