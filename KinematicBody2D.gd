@@ -42,15 +42,13 @@ var zoomed = Vector2(.5,.5)
 func _physics_process(delta):
 	
 	
-	print(cam.zoom)
-	
 	if hop_flag == true:
 		
 		# counts the frames of animation
 		animation_counter += delta
 		
-		if anim.current_animation == "char_stretching":
-			pass
+		if anim.current_animation == "char_stretch":
+			cam.zoom = zoomed
 		
 		# if enough time has elaped to finish the animation,
 		# then stop the animation and play idle (which doesn't
@@ -61,6 +59,7 @@ func _physics_process(delta):
 			anim.stop()
 	else:
 		if stretching:
+
 			cam.zoom = zoomed
 			sprite.hide()
 			stretched_sprite.show()
@@ -78,6 +77,7 @@ func _physics_process(delta):
 		stretching = true
 		anim.play("char_stretch")
 		hop_flag = true
+		
 	else:
 		stretching = false
 		
