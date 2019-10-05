@@ -9,11 +9,11 @@ var motion = Vector2()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	
+	print("w")
 	motion.y += GRAVITY
 	
-	if Input.is_action_just_pressed("ui_right"):
-		motion.x += 2000
+	if Input.is_action_pressed("ui_right"):
+		motion.x = SPEED
 	elif Input.is_action_pressed("ui_left"):
 		motion.x = -SPEED
 	else: 

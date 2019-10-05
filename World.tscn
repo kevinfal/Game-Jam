@@ -12,6 +12,9 @@ extents = Vector2( 32, 32 )
 
 [node name="World" type="Node"]
 
+[node name="Camera2D" type="Camera2D" parent="."]
+current = true
+
 [node name="slime" type="KinematicBody2D" parent="."]
 position = Vector2( 120, 40 )
 script = ExtResource( 1 )
@@ -25,10 +28,8 @@ texture = ExtResource( 2 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="slime"]
 shape = SubResource( 2 )
 
-[node name="Camera2D" type="Camera2D" parent="slime"]
-current = true
-
 [node name="stone_platform" type="Node" parent="."]
+editor/display_folded = true
 
 [node name="tile" type="StaticBody2D" parent="stone_platform"]
 editor/display_folded = true
@@ -73,7 +74,6 @@ visible = false
 shape = SubResource( 1 )
 
 [node name="tile4" type="StaticBody2D" parent="stone_platform"]
-editor/display_folded = true
 position = Vector2( 256, 80 )
 __meta__ = {
 "_edit_group_": true
@@ -83,5 +83,4 @@ __meta__ = {
 texture = ExtResource( 3 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="stone_platform/tile4"]
-visible = false
 shape = SubResource( 1 )
