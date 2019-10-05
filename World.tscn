@@ -1,7 +1,14 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://slime.gd" type="Script" id=1]
 [ext_resource path="res://Sprites/char_stand_right0.png" type="Texture" id=2]
+[ext_resource path="res://Sprites/basic_tile.png" type="Texture" id=3]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 8, 8 )
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 32, 32 )
 
 [node name="World" type="Node"]
 
@@ -14,3 +21,67 @@ __meta__ = {
 
 [node name="Sprite" type="Sprite" parent="slime"]
 texture = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="slime"]
+shape = SubResource( 2 )
+
+[node name="Camera2D" type="Camera2D" parent="slime"]
+current = true
+
+[node name="stone_platform" type="Node" parent="."]
+
+[node name="tile" type="StaticBody2D" parent="stone_platform"]
+editor/display_folded = true
+position = Vector2( 64, 80 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="stone_platform/tile"]
+texture = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="stone_platform/tile"]
+visible = false
+shape = SubResource( 1 )
+
+[node name="tile2" type="StaticBody2D" parent="stone_platform"]
+editor/display_folded = true
+position = Vector2( 128, 80 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="stone_platform/tile2"]
+texture = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="stone_platform/tile2"]
+visible = false
+shape = SubResource( 1 )
+
+[node name="tile3" type="StaticBody2D" parent="stone_platform"]
+editor/display_folded = true
+position = Vector2( 192, 80 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="stone_platform/tile3"]
+texture = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="stone_platform/tile3"]
+visible = false
+shape = SubResource( 1 )
+
+[node name="tile4" type="StaticBody2D" parent="stone_platform"]
+editor/display_folded = true
+position = Vector2( 256, 80 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="stone_platform/tile4"]
+texture = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="stone_platform/tile4"]
+visible = false
+shape = SubResource( 1 )
