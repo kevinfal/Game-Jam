@@ -22,35 +22,41 @@ onready var anim = get_node("sprite/AnimationPlayer")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	print(facing_right)
+	
 	motion += GRAVITY
-	# check if hopping
+	# check if hopping (moving left or right)
 	if hop_flag == true:
 		
+		# counts the frames of animation
 		animation_counter += delta
 		
-		
+		# if enough time has elaped to finish the animation,
+		# then stop the animation and play idle (which doesn't
+		# really work)
 		if animation_counter >= anim.current_animation_length:
 			hop_flag = false
 			animation_counter = 0
 			anim.stop()
+			
+			#choose which direction to play idle for
 			if facing_right:
 				anim.play("idle")
 			else:
 				anim.play("idle_left")
 	else:
 		
+		# input is right arrow
 		if Input.is_action_pressed("ui_right"):
 			anim.play("hop_right")
 			hop_flag = true
-			motion += HOP_RIGHT
+			motion = HOP_RIGHT
 			facing_right = true
 			
 			
 		elif Input.is_action_pressed("ui_left"):
 			anim.play("hop_left")
 			hop_flag = true
-			motion += HOP_LEFT
+			motion = HOP_LEFT
 			facing_right = false
 
 		
