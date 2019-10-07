@@ -1,126 +1,132 @@
 """
 
 PROBLEMS / TO DO:
-	You can levitate in the air by just holding left or right
+	
+	You can levitate in the air by just holding left or right (fix)
 	Clean up some code, add helper functions and stuff, reorganize things
 	Press shinft to see how far I got on stretching, I have some ideas i'll fill you in on
+	I want everything to sort of pause when you press shift because that's the stretching mode
+	fix movement, its like too smooth right now
+	Getting rid of redundancy
 """
 
 
 extends KinematicBody2D
 
+const UNIT = 1000
 const UP = Vector2(0, -1)
-const GRAVITY =  Vector2(0, 20)
-const JUMP_HEIGHT = Vector2(100, -550) #changed jump arbritrarily
-
-const HOP_RIGHT = Vector2(100, 0) # I changed left and right to 100 arbritrarily
-const HOP_LEFT = Vector2(-100, 0)
+const GRAVITY =  Vector2(0, 50)
+const JUMP_HEIGHT = Vector2(100, -4000) #changed jump arbritrarily
+const HOP_RIGHT = Vector2(1000, 0) # I changed left and right to 100 arbritrarily
+const HOP_LEFT = Vector2(-1000, 0)
 
 var motion = Vector2()
 
+# flags/booleans
 var facing_right = true
 var is_jumping = false
 var hop_flag = false
-var animation_counter = 0
+var stretch_Flag = false
+var void_flag = false # for voiding inputs
 
-var stretching = false
+
+# character variables
 var mass = 2
+
+# counters
+var animation_counter = 0
+var void_counter = 0
+var time_voided = 0
 
 # gets the children nodes
 # gets the animation node for animations
 onready var anim = get_node("sprite/AnimationPlayer")
 onready var cam = get_node("Camera2D")
-onready var sprite = get_node("sprite")
-onready var stretched_sprite = get_node("streched")
+
+# sprite vars
+onready var sprite = get_node("sprite") # normal sprite
+onready var stretched_sprite = get_node("streched") # the sprite for when the character is stretched
 
 #camera vars
 var normal_zoom = Vector2(1,1)
 var zoomed = Vector2(.5,.5)
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta):
-	
-	
-	if hop_flag == true:
-		
-		# counts the frames of animation
+func hopping(delta):
+		#this happens every frame of the animation
 		animation_counter += delta
+		var chop = 15 # UNIT / chop decides how to move every frame
 		
-		if anim.current_animation == "char_stretch":
-			cam.zoom = zoomed
+		if facing_right:
+			var move = ( UNIT / chop )
+			movement_x(move)
+		# facing left
+		elif not facing_right:
+			var change = ( -1 * UNIT / chop)
+			movement_x(change)
 		
-		# if enough time has elaped to finish the animation,
-		# then stop the animation and play idle (which doesn't
-		# really work)
-		if animation_counter >= anim.current_animation_length:
+		# if animation if finished
+		if animation_counter >= anim.current_animation_length :
+			
 			hop_flag = false
 			animation_counter = 0
 			anim.stop()
-	else:
-		if stretching:
-
-			cam.zoom = zoomed
-			sprite.hide()
-			stretched_sprite.show()
+			#motion = HOP_RIGHT
+			void_flag = true # ignore inputs after
+			time_voided = 0.1 # 0.01 delta
 			
-		else:
-			cam.zoom = normal_zoom
-			sprite.show()
-			stretched_sprite.hide()
-			
+func voidInputs(delta):
+	"""
+		Ignores inputs, has highest priority in controller
+	"""
+	void_counter += delta
+	if void_counter > time_voided:
+		time_voided = 0
+		void_flag = false
+		void_counter = 0
+		
+func movement_x(change):
+	motion = Vector2(change, 0)
 	motion += GRAVITY
-	# check if hopping (moving left or right)
+	move_and_slide(motion,UP)
 	
 		
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _physics_process(delta):
+	motion = Vector2()
+	if void_flag: # ignores inputs
+		voidInputs(delta)
+	elif hop_flag:
+		hopping(delta)
+	
+	#special controls
+	
+	#stretching
 	if Input.is_key_pressed(KEY_SHIFT):
-		stretching = true
-		anim.play("char_stretch")
-		hop_flag = true
-		
+		stretch_Flag = true
 	else:
-		stretching = false
-		
-	
-	# input is right arrow
-	if Input.is_action_pressed("ui_right"):
-		# play the animation for hopping right
-		# move right, set facing to right, and play animation
-		
-		anim.play("hop_right")
-		hop_flag = true
-		motion = HOP_RIGHT
-		facing_right = true
-		
-		
-	elif Input.is_action_pressed("ui_left"):
-		
-		anim.play("hop_left")
-		hop_flag = true
-		motion = HOP_LEFT
-		facing_right = false
-
-	
-	else:
-		#choose which direction to play idle for
-		if facing_right:
-			anim.play("idle")
-		else:
-			anim.play("idle_left")
-		motion.x = 0
-		
-	if Input.is_action_just_pressed("ui_accept"):
-		pass
-		
-	if is_on_floor():
-		
-		motion.y = 0
-		if Input.is_action_just_pressed("ui_up"):
+		# movement controls
+		if Input.is_action_pressed("ui_right"):
+			# play the animation for hopping right
+			# move right, set facing to right, and play animation
+			hop_flag = true
+			facing_right = true
+			anim.play("hop_right")
+			hopping(delta)
+		elif Input.is_action_pressed("ui_left"):
+			hop_flag = true
+			facing_right = false
+			anim.play("hop_left")
+			hopping(delta)
+		if Input.is_action_pressed("ui_up") and is_on_floor():
 			motion = JUMP_HEIGHT
+		# this is for the falling animation
+		if not is_on_floor():
+			var animation = "fall_right" if facing_right else "fall_left"
+			anim.play(animation)
 		
-	move_and_slide(motion, UP)
-	
-	pass
 		
+		
+		motion += GRAVITY
+		move_and_slide(motion,UP)
 func stretch():
 	anim.play("char_strech")
